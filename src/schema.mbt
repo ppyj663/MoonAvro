@@ -44,7 +44,7 @@ pub fn primitive_from_name(name : String) -> PrimitiveKind? {
 /// Shared metadata for record, enum, and fixed schemas.
 pub(all) struct NamedType {
   name : String
-  namespace : String
+  namespace_name : String
   full_name : String
   aliases : Array[String]
   doc : String?
@@ -53,16 +53,16 @@ pub(all) struct NamedType {
 ///|
 pub fn NamedType::new(
   name : String,
-  namespace : String,
+  namespace_name : String,
   aliases : Array[String],
   doc : String?,
 ) -> NamedType {
-  let full_name = if namespace.is_empty() {
+  let full_name = if namespace_name.is_empty() {
     name
   } else {
-    namespace + "." + name
+    namespace_name + "." + name
   }
-  { name, namespace, full_name, aliases, doc, }
+  { name, namespace_name, full_name, aliases, doc, }
 }
 
 ///|
@@ -129,7 +129,7 @@ pub fn Schema::display_name(self : Schema) -> String {
     ArraySchema(item) => "array<" + item.display_name() + ">"
     MapSchema(value) => "map<" + value.display_name() + ">"
     Union(branches) => {
-      let buffer = StringBuilder::new()
+      let buffer = StringBuilder()
       buffer.write_string("union[")
       for index, branch in branches {
         if index > 0 {
@@ -176,7 +176,7 @@ pub fn SchemaDocument::new(
 
 ///|
 pub fn SchemaDocument::of(root : Schema) -> SchemaDocument {
-  { root, definitions: Map::new(), }
+  { root, definitions: Map([]), }
 }
 
 ///|
@@ -200,7 +200,7 @@ pub fn SchemaDocument::definition(
 
 ///|
 pub fn SchemaDocument::definition_count(self : SchemaDocument) -> Int {
-  self.definitions.size()
+  self.definitions.length()
 }
 
 ///|
@@ -213,11 +213,11 @@ pub fn SchemaDocument::all_names(self : SchemaDocument) -> Array[String] {
 }
 
 ///|
-pub fn fullname(name : String, namespace : String) -> String {
-  if name.contains(".") || namespace.is_empty() {
+pub fn fullname(name : String, enclosing_namespace : String) -> String {
+  if name.contains(".") || enclosing_namespace.is_empty() {
     name
   } else {
-    namespace + "." + name
+    enclosing_namespace + "." + name
   }
 }
 

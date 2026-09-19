@@ -35,7 +35,7 @@ test "qualified names retain namespace" {
 test "schema document resolves named references" {
   let named = @moonavro.NamedType::new("Point", "geometry", [], None)
   let schema = @moonavro.Record(named, [])
-  let definitions = Map::new()
+  let definitions = Map([])
   definitions.set("geometry.Point", schema)
   let document = @moonavro.SchemaDocument::new(
     @moonavro.NamedRef("geometry.Point"),

@@ -27,7 +27,7 @@ pub fn AvroPath::to_string(self : AvroPath) -> String {
   if self.segments.is_empty() {
     "$"
   } else {
-    let buffer = StringBuilder::new()
+    let buffer = StringBuilder()
     buffer.write_string("$")
     for segment in self.segments {
       if segment.has_prefix("[") {

@@ -55,7 +55,7 @@ fn json_optional_strings(
 
 ///|
 fn normalize_aliases(aliases : Array[String], ns : String) -> Array[String] {
-  aliases.map(alias => fullname(alias, ns))
+  aliases.map(alias_name => fullname(alias_name, ns))
 }
 
 ///|
@@ -186,7 +186,7 @@ fn parse_default(
       }
     Primitive(Float) =>
       match value {
-        Number(number, ..) => Ok(FloatValue(number.to_float()))
+        Number(number, ..) => Ok(FloatValue(Float::from_double(number)))
         _ => Err(InvalidDefault(path, "expected float"))
       }
     Primitive(Double) =>
@@ -374,7 +374,7 @@ fn parse_record(
     let field_schema = match
       parse_schema_json(
         field_schema_json,
-        named.namespace,
+        named.namespace_name,
         field_path.field("type"),
         definitions,
       ) {

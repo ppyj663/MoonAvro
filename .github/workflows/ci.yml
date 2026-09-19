@@ -16,3 +16,13 @@ jobs:
       - run: moon check --target wasm-gc
       - run: moon test --target wasm-gc
       - run: moon info
+      - run: moon run examples/basic --target js
+      - name: CLI round trip
+        run: |
+          moon run cmd/moonavro --target js -- inspect fixtures/user.avsc
+          moon run cmd/moonavro --target js -- canonical fixtures/user.avsc
+          moon run cmd/moonavro --target js -- compatible fixtures/user.avsc fixtures/user.avsc
+          moon run cmd/moonavro --target js -- encode fixtures/user.avsc fixtures/user.json _build/user.bin
+          moon run cmd/moonavro --target js -- decode fixtures/user.avsc _build/user.bin
+          moon run cmd/moonavro --target js -- pack fixtures/user.avsc fixtures/user.json _build/user.avro
+          moon run cmd/moonavro --target js -- unpack _build/user.avro

@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "demo.accounts",
+  "fields": [
+    { "name": "id", "type": "long" },
+    { "name": "display_name", "type": "string" },
+    { "name": "email", "type": ["null", "string"], "default": null },
+    { "name": "roles", "type": { "type": "array", "items": "string" } },
+    { "name": "active", "type": "boolean", "default": true }
+  ]
+}

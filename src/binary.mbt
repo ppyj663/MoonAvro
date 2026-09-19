@@ -195,7 +195,7 @@ pub fn BinaryReader::read_float(
   }
   let bits = self.data.unsafe_read_uint32_le(self.position)
   self.position += 4
-  Ok(bits.reinterpret_as_float())
+  Ok(Float::reinterpret_from_uint(bits))
 }
 
 ///|
