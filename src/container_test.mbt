@@ -29,6 +29,31 @@ fn log_entry(
 }
 
 ///|
+fn byte_occurrences(data : Bytes, needle : Bytes) -> Int {
+  if needle.is_empty() || needle.length() > data.length() {
+    return 0
+  }
+  let mut count = 0
+  let mut position = 0
+  while position <= data.length() - needle.length() {
+    let mut matched = true
+    for offset = 0; offset < needle.length(); offset = offset + 1 {
+      if data[position + offset] != needle[offset] {
+        matched = false
+        break
+      }
+    }
+    if matched {
+      count = count + 1
+      position = position + needle.length()
+    } else {
+      position = position + 1
+    }
+  }
+  count
+}
+
+///|
 test "write and read object container file" {
   let schema = container_schema()
   let values = [
@@ -56,6 +81,27 @@ test "write and read object container file" {
 }
 
 ///|
+test "container writer splits records into bounded blocks" {
+  let marker = b"0123456789abcdef"
+  let values = [
+    log_entry(1L, "one", "INFO"),
+    log_entry(2L, "two", "WARN"),
+    log_entry(3L, "three", "ERROR"),
+  ]
+  let encoded = @moonavro.write_container(
+    container_schema(),
+    values,
+    sync_marker=marker,
+    block_records=2,
+  )
+  guard encoded is Ok(bytes) else { fail("container encode failed") }
+  assert_eq(byte_occurrences(bytes, marker), 3)
+  let decoded = @moonavro.read_container(bytes)
+  guard decoded is Ok(container) else { fail("container decode failed") }
+  assert_eq(container.values, values)
+}
+
+///|
 test "round trip empty container" {
   let schema = container_schema()
   let encoded = @moonavro.write_container(schema, [])
@@ -77,6 +123,18 @@ test "container requires sixteen byte sync marker" {
   guard @moonavro.write_container(container_schema(), [], sync_marker=b"short")
     is Err(@moonavro.InvalidSyncMarker) else {
     fail("invalid sync marker accepted")
+  }
+}
+
+///|
+test "container rejects a non-positive block record limit" {
+  guard @moonavro.write_container(
+      container_schema(),
+      [log_entry(1L, "hello", "INFO")],
+      block_records=0,
+    )
+    is Err(@moonavro.InvalidBlockRecordLimit(0)) else {
+    fail("invalid block record limit accepted")
   }
 }
 

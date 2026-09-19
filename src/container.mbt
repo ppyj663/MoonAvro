@@ -102,9 +102,13 @@ pub fn write_container(
   values : Array[Value],
   metadata? : Array[(String, Bytes)] = [],
   sync_marker? : Bytes = default_sync_marker,
+  block_records? : Int = 1024,
 ) -> Result[Bytes, ContainerError] {
   if sync_marker.length() != 16 {
     return Err(InvalidSyncMarker)
+  }
+  if block_records <= 0 {
+    return Err(InvalidBlockRecordLimit(block_records))
   }
   let schema_json = match schema_to_json(schema) {
     Ok(value) => value
@@ -124,18 +128,31 @@ pub fn write_container(
   write_metadata_map(output, header_metadata)
   output.write_raw(sync_marker[:])
   if !values.is_empty() {
-    let block = BinaryWriter::new()
-    for value in values {
-      match encode_into(block, schema, value) {
-        Ok(_) => ()
-        Err(error) => return Err(ContainerEncode(error))
+    let mut block_start = 0
+    while block_start < values.length() {
+      let remaining = values.length() - block_start
+      let record_count = if block_records < remaining {
+        block_records
+      } else {
+        remaining
       }
+      let block_end = block_start + record_count
+      let block = BinaryWriter::new()
+      for record_index = block_start
+          record_index < block_end
+          record_index = record_index + 1 {
+        match encode_into(block, schema, values[record_index]) {
+          Ok(_) => ()
+          Err(error) => return Err(ContainerEncode(error))
+        }
+      }
+      let block_bytes = block.finish()
+      output.write_long(record_count.to_int64())
+      output.write_long(block_bytes.length().to_int64())
+      output.write_raw(block_bytes[:])
+      output.write_raw(sync_marker[:])
+      block_start = block_end
     }
-    let block_bytes = block.finish()
-    output.write_long(values.length().to_int64())
-    output.write_long(block_bytes.length().to_int64())
-    output.write_raw(block_bytes[:])
-    output.write_raw(sync_marker[:])
   }
   Ok(output.finish())
 }

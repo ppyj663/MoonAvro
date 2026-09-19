@@ -17,7 +17,7 @@ not a schema registry, Kafka client, or RPC runtime.
 | Avro binary | Primitive and compound datum encoding/decoding; checked lengths, malformed varints, invalid indexes, UTF-8 and trailing-data errors |
 | Evolution | Writer-to-reader compatibility diagnostics and datum resolution; record reordering, reader defaults, aliases, enum defaults, unions, and Avro numeric promotions |
 | Identity | Parsing Canonical Form, CRC-64-AVRO fingerprint, and single-object encoding |
-| Object container | OCF header and blocks with embedded full writer schema; `null` codec |
+| Object container | OCF header and configurable multi-record blocks with embedded full writer schema; `null` codec |
 | JSON data | Schema-aware conversion between `Value` and Avro JSON datum encoding |
 | Targets | Shared library tests on JavaScript and WebAssembly-GC |
 

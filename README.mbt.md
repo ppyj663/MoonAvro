@@ -100,8 +100,9 @@ CRC-64-AVRO fingerprint. `encode_single_object` and `decode_single_object`
 implement the Avro single-object envelope.
 
 `write_container` and `read_container` read and write Avro Object Container
-Files with embedded full writer schemas and the `null` codec. Other compression
-codecs and logical types are outside the current MVP.
+Files with embedded full writer schemas and the `null` codec. The writer can
+split large input arrays into bounded blocks with `block_records`. Other
+compression codecs and logical types are outside the current MVP.
 
 ## Typed errors
 

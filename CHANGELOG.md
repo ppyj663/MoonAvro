@@ -11,3 +11,4 @@
 - Preserved full writer schema metadata in object container headers.
 - Added named-union JSON labels and size-prefixed OCF block interoperability.
 - Added CLI decoding with distinct writer and reader schemas.
+- Added configurable OCF block sizing for multi-block output.

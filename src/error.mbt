@@ -105,6 +105,7 @@ pub(all) suberror ContainerError {
   MissingSchemaMetadata
   UnsupportedCodec(String)
   InvalidSyncMarker
+  InvalidBlockRecordLimit(Int)
   InvalidMetadata(String)
   InvalidContainerBlock(String)
   ContainerSchema(SchemaError)
