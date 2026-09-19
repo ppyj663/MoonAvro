@@ -13,3 +13,4 @@
 - Added CLI decoding with distinct writer and reader schemas.
 - Added configurable OCF block sizing for multi-block output.
 - Reject malformed or duplicated named-type and record-field aliases.
+- Add explicit target builds and a 65% library line-coverage gate to CI.

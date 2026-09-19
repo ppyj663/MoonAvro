@@ -101,15 +101,20 @@ Install the MoonBit CLI, resolve the package, and run the checks:
 moon update
 moon fmt --check
 moon check --target js
+moon build src --target js
 moon test --target js
 moon check --target wasm-gc
+moon build src --target wasm-gc
 moon test --target wasm-gc
+./scripts/coverage.ps1 -MinimumPercent 65
+moon build cmd/moonavro --target js
 moon info
 ```
 
-CI runs formatting, type checks, and the full test suite on both targets. Tests
-cover Apache wire vectors, malformed input, schema parsing, resolution,
-fingerprints, JSON datums, and OCF round trips. For contribution workflow, see
+CI runs formatting, explicit builds, type checks, and the full test suite on
+both targets, plus a 65% MoonAvro library line-coverage gate. Tests cover
+Apache wire vectors, malformed input, schema parsing, resolution, fingerprints,
+JSON datums, and OCF round trips. For contribution workflow, see
 [CONTRIBUTING.md](CONTRIBUTING.md); for vulnerability reports, see
 [SECURITY.md](SECURITY.md).
 

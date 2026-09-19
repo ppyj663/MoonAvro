@@ -6,8 +6,9 @@ MoonAvro accepts focused issues and pull requests. Before opening a change:
 2. Add a failing test or an external compatibility vector.
 3. Keep public APIs target-independent unless a package is explicitly marked
    for one target.
-4. Run `moon fmt --check`, `moon check --target js`, `moon test --target js`,
-   `moon check --target wasm-gc`, and `moon test --target wasm-gc`.
+4. Run `moon fmt --check`, build and check the `src` package on JS and Wasm-GC,
+   run both test suites, run `./scripts/coverage.ps1 -MinimumPercent 65`, and
+   build the JS CLI.
 5. Update README/API documentation for user-visible changes.
 
 Generated build output must not be committed. Compatibility fixes should name
