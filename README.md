@@ -2,8 +2,7 @@
 
 MoonAvro is a MoonBit-native Apache Avro schema, binary codec, and schema
 evolution library. It is being developed in public for the September 2026
-MoonBit Hackathon and is an independent project; it does not depend on or
-extend MoonAttest.
+MoonBit Hackathon.
 
 The goal is to make Avro data usable from MoonBit programs on JavaScript and
 WebAssembly-GC without requiring a JVM bridge. The library owns schema
