@@ -171,3 +171,39 @@ test "parse compound defaults" {
     ),
   )
 }
+
+///|
+test "reject invalid and duplicated aliases" {
+  guard @moonavro.parse_schema(
+      (
+        #|{"type":"record","name":"User","aliases":["old name"],"fields":[]}
+      ),
+    )
+    is Err(@moonavro.InvalidName(_, "old name")) else {
+    fail("invalid named alias accepted")
+  }
+  guard @moonavro.parse_schema(
+      (
+        #|{"type":"record","name":"User","aliases":["Old","Old"],"fields":[]}
+      ),
+    )
+    is Err(@moonavro.DuplicateAlias(_, "Old")) else {
+    fail("duplicate named alias accepted")
+  }
+  guard @moonavro.parse_schema(
+      (
+        #|{"type":"record","name":"User","fields":[{"name":"id","type":"long","aliases":["old id"]}]}
+      ),
+    )
+    is Err(@moonavro.InvalidName(_, "old id")) else {
+    fail("invalid field alias accepted")
+  }
+  guard @moonavro.parse_schema(
+      (
+        #|{"type":"record","name":"User","fields":[{"name":"id","type":"long","aliases":["old_id","old_id"]}]}
+      ),
+    )
+    is Err(@moonavro.DuplicateAlias(_, "old_id")) else {
+    fail("duplicate field alias accepted")
+  }
+}

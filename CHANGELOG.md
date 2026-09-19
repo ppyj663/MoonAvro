@@ -12,3 +12,4 @@
 - Added named-union JSON labels and size-prefixed OCF block interoperability.
 - Added CLI decoding with distinct writer and reader schemas.
 - Added configurable OCF block sizing for multi-block output.
+- Reject malformed or duplicated named-type and record-field aliases.

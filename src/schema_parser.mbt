@@ -54,8 +54,45 @@ fn json_optional_strings(
 }
 
 ///|
-fn normalize_aliases(aliases : Array[String], ns : String) -> Array[String] {
-  aliases.map(alias_name => fullname(alias_name, ns))
+fn normalize_aliases(
+  aliases : Array[String],
+  ns : String,
+  path : AvroPath,
+) -> Result[Array[String], SchemaError] {
+  let normalized : Array[String] = []
+  let seen : Map[String, Bool] = Map([])
+  for index, alias_name in aliases {
+    let alias_full_name = fullname(alias_name, ns)
+    let alias_path = path.field("aliases").index(index)
+    if !valid_fullname(alias_full_name) {
+      return Err(InvalidName(alias_path, alias_name))
+    }
+    if seen.contains(alias_full_name) {
+      return Err(DuplicateAlias(alias_path, alias_full_name))
+    }
+    seen.set(alias_full_name, true)
+    normalized.push(alias_full_name)
+  }
+  Ok(normalized)
+}
+
+///|
+fn validate_field_aliases(
+  aliases : Array[String],
+  path : AvroPath,
+) -> Result[Array[String], SchemaError] {
+  let seen : Map[String, Bool] = Map([])
+  for index, alias_name in aliases {
+    let alias_path = path.field("aliases").index(index)
+    if !valid_name(alias_name) {
+      return Err(InvalidName(alias_path, alias_name))
+    }
+    if seen.contains(alias_name) {
+      return Err(DuplicateAlias(alias_path, alias_name))
+    }
+    seen.set(alias_name, true)
+  }
+  Ok(aliases)
 }
 
 ///|
@@ -88,7 +125,11 @@ fn named_metadata(
   }
   let actual_name = shortname(declared_name)
   let aliases = match json_optional_strings(object, "aliases", path) {
-    Ok(value) => normalize_aliases(value, actual_ns)
+    Ok(value) =>
+      match normalize_aliases(value, actual_ns, path) {
+        Ok(normalized) => normalized
+        Err(error) => return Err(error)
+      }
     Err(error) => return Err(error)
   }
   let doc = match json_optional_string(object, "doc", path) {
@@ -383,7 +424,11 @@ fn parse_record(
     }
     let aliases = match
       json_optional_strings(field_object, "aliases", field_path) {
-      Ok(value) => value
+      Ok(value) =>
+        match validate_field_aliases(value, field_path) {
+          Ok(validated) => validated
+          Err(error) => return Err(error)
+        }
       Err(error) => return Err(error)
     }
     let doc = match json_optional_string(field_object, "doc", field_path) {

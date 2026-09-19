@@ -13,7 +13,7 @@ not a schema registry, Kafka client, or RPC runtime.
 
 | Area | Supported in the MVP |
 | --- | --- |
-| Schema JSON | `null`, `boolean`, `int`, `long`, `float`, `double`, `bytes`, `string`, records, enums, fixed, arrays, maps, unions, namespaces, aliases, recursive named references, field defaults |
+| Schema JSON | `null`, `boolean`, `int`, `long`, `float`, `double`, `bytes`, `string`, records, enums, fixed, arrays, maps, unions, namespaces, validated aliases, recursive named references, field defaults |
 | Avro binary | Primitive and compound datum encoding/decoding; checked lengths, malformed varints, invalid indexes, UTF-8 and trailing-data errors |
 | Evolution | Writer-to-reader compatibility diagnostics and datum resolution; record reordering, reader defaults, aliases, enum defaults, unions, and Avro numeric promotions |
 | Identity | Parsing Canonical Form, CRC-64-AVRO fingerprint, and single-object encoding |

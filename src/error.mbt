@@ -50,6 +50,7 @@ pub(all) suberror SchemaError {
   InvalidProperty(AvroPath, String, String)
   InvalidName(AvroPath, String)
   DuplicateName(AvroPath, String)
+  DuplicateAlias(AvroPath, String)
   DuplicateField(AvroPath, String)
   DuplicateSymbol(AvroPath, String)
   DuplicateUnionBranch(AvroPath, String)
