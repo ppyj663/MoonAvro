@@ -23,6 +23,8 @@ jobs:
         run: ./scripts/coverage.ps1 -MinimumPercent 65
       - run: moon build cmd/moonavro --target js
       - run: moon run examples/basic --target js
+      - run: moon run examples/evolution --target js
+      - run: moon run examples/container --target js
       - name: CLI round trip
         run: |
           moon run cmd/moonavro --target js -- inspect fixtures/user.avsc

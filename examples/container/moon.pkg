@@ -1,0 +1,5 @@
+import {
+  "ppyj663/moonavro/src" @avro,
+}
+
+pkgtype(kind: "executable")

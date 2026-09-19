@@ -67,6 +67,10 @@ The example is also available as a runnable program:
 moon run examples/basic --target js
 ```
 
+Three complete, runnable scenarios—basic event encoding, schema evolution,
+and multi-block container archiving—are documented in
+[docs/use-cases.md](docs/use-cases.md).
+
 The public API is documented in [README.mbt.md](README.mbt.md). The design and
 implementation milestones are tracked in [the design](docs/plans/2026-09-19-moonavro-design.md)
 and [the MVP plan](docs/plans/2026-09-19-moonavro-mvp.md).
