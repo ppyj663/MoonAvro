@@ -82,6 +82,7 @@ moon run cmd/moonavro --target js -- canonical fixtures/user.avsc
 moon run cmd/moonavro --target js -- compatible fixtures/user.avsc fixtures/user.avsc
 moon run cmd/moonavro --target js -- encode fixtures/user.avsc fixtures/user.json _build/user.bin
 moon run cmd/moonavro --target js -- decode fixtures/user.avsc _build/user.bin
+moon run cmd/moonavro --target js -- decode-resolved fixtures/user.avsc fixtures/user-v2.avsc _build/user.bin
 moon run cmd/moonavro --target js -- pack fixtures/user.avsc fixtures/user.json _build/user.avro
 moon run cmd/moonavro --target js -- unpack _build/user.avro
 ```
@@ -89,6 +90,8 @@ moon run cmd/moonavro --target js -- unpack _build/user.avro
 `compatible` exits with status `0` for compatible schemas, `1` for an
 incompatibility, and `2` for invalid command input or file I/O. `encode` writes
 the raw Avro datum bytes; `pack` writes a one-record OCF file.
+`decode-resolved` decodes with the writer schema, applies the reader schema,
+then emits the upgraded datum as JSON.
 
 ## Development and verification
 

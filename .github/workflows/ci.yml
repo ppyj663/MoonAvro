@@ -24,5 +24,6 @@ jobs:
           moon run cmd/moonavro --target js -- compatible fixtures/user.avsc fixtures/user.avsc
           moon run cmd/moonavro --target js -- encode fixtures/user.avsc fixtures/user.json _build/user.bin
           moon run cmd/moonavro --target js -- decode fixtures/user.avsc _build/user.bin
+          moon run cmd/moonavro --target js -- decode-resolved fixtures/user.avsc fixtures/user-v2.avsc _build/user.bin
           moon run cmd/moonavro --target js -- pack fixtures/user.avsc fixtures/user.json _build/user.avro
           moon run cmd/moonavro --target js -- unpack _build/user.avro

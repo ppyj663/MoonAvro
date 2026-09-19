@@ -47,6 +47,7 @@ fn usage() -> Unit {
   println("  moonavro compatible <writer.avsc> <reader.avsc>")
   println("  moonavro encode <schema.avsc> <datum.json> <output.bin>")
   println("  moonavro decode <schema.avsc> <input.bin>")
+  println("  moonavro decode-resolved <writer.avsc> <reader.avsc> <input.bin>")
   println("  moonavro pack <schema.avsc> <datum.json> <output.avro>")
   println("  moonavro unpack <input.avro>")
 }
@@ -60,6 +61,7 @@ fn find_command(args : Array[String]) -> (String, Int)? {
       | "compatible"
       | "encode"
       | "decode"
+      | "decode-resolved"
       | "pack"
       | "unpack" => return Some((value, index))
       _ => ()
@@ -246,6 +248,50 @@ fn run_decode(args : Array[String], index : Int) -> Int {
 }
 
 ///|
+fn run_decode_resolved(args : Array[String], index : Int) -> Int {
+  guard index + 3 < args.length() else {
+    usage()
+    return 2
+  }
+  let writer = match load_schema(args[index + 1]) {
+    Some(value) => value
+    None => return 2
+  }
+  let reader = match load_schema(args[index + 2]) {
+    Some(value) => value
+    None => return 2
+  }
+  let bytes = match read_binary_file(args[index + 3]) {
+    Some(value) => value
+    None => {
+      println("error: cannot read " + args[index + 3])
+      return 2
+    }
+  }
+  let value = match @avro.decode_resolved(writer, reader, bytes) {
+    Ok(value) => value
+    Err(error) => {
+      println(
+        "error: resolved decode failed: " + Debug::to_repr(error).to_string(),
+      )
+      return 1
+    }
+  }
+  match @avro.value_to_json_string(reader, value, pretty=true) {
+    Ok(text) => {
+      println(text)
+      0
+    }
+    Err(error) => {
+      println(
+        "error: JSON rendering failed: " + Debug::to_repr(error).to_string(),
+      )
+      1
+    }
+  }
+}
+
+///|
 fn run_pack(args : Array[String], index : Int) -> Int {
   guard index + 3 < args.length() else {
     usage()
@@ -318,6 +364,7 @@ fn main {
     Some(("compatible", index)) => run_compatible(args, index)
     Some(("encode", index)) => run_encode(args, index)
     Some(("decode", index)) => run_decode(args, index)
+    Some(("decode-resolved", index)) => run_decode_resolved(args, index)
     Some(("pack", index)) => run_pack(args, index)
     Some(("unpack", index)) => run_unpack(args, index)
     _ => {
