@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit
+        shell: bash
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: moon fmt --check
+      - run: moon check --target js
+      - run: moon build src --target js
+      - run: moon test --target js
+      - run: moon check --target wasm-gc
+      - run: moon build src --target wasm-gc
+      - run: moon test --target wasm-gc
+      - run: moon info
+      - name: Library coverage gate
+        shell: pwsh
+        run: ./scripts/coverage.ps1 -MinimumPercent 65
+      - run: moon build cmd/moonavro --target js
+      - run: moon run examples/basic --target js
+      - run: moon run examples/evolution --target js
+      - run: moon run examples/container --target js
+      - name: CLI round trip
+        run: |
+          moon run cmd/moonavro --target js -- inspect fixtures/user.avsc
+          moon run cmd/moonavro --target js -- canonical fixtures/user.avsc
+          moon run cmd/moonavro --target js -- compatible fixtures/user.avsc fixtures/user.avsc
+          moon run cmd/moonavro --target js -- encode fixtures/user.avsc fixtures/user.json _build/user.bin
+          moon run cmd/moonavro --target js -- decode fixtures/user.avsc _build/user.bin
+          moon run cmd/moonavro --target js -- decode-resolved fixtures/user.avsc fixtures/user-v2.avsc _build/user.bin
+          moon run cmd/moonavro --target js -- pack fixtures/user.avsc fixtures/user.json _build/user.avro
+          moon run cmd/moonavro --target js -- unpack _build/user.avro

@@ -1,0 +1,7 @@
+{
+  "id": 42,
+  "display_name": "MoonBit Developer",
+  "email": { "string": "developer@example.com" },
+  "roles": ["maintainer", "reviewer"],
+  "active": true
+}

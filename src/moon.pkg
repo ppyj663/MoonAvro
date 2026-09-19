@@ -1,0 +1,10 @@
+import {
+  "moonbitlang/core/double",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/float",
+  "moonbitlang/core/json",
+}
+
+import {
+  "ppyj663/moonavro/src" @moonavro,
+} for "test"

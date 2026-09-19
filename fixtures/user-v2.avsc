@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "UserV2",
+  "namespace": "demo.accounts",
+  "aliases": ["User"],
+  "fields": [
+    { "name": "display_name", "type": "string" },
+    { "name": "id", "type": "double" },
+    { "name": "email", "type": ["null", "string"] },
+    { "name": "roles", "type": { "type": "array", "items": "string" } },
+    { "name": "active", "type": "boolean" },
+    { "name": "created_by", "type": "string", "default": "migration" }
+  ]
+}

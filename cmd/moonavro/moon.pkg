@@ -1,0 +1,8 @@
+import {
+  "ppyj663/moonavro/src" @avro,
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")
+
+supported_targets = "js"
